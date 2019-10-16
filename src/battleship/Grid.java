@@ -1,3 +1,5 @@
+package battleship;
+
 public class Grid
 {
     private Location[][] grid;
@@ -207,6 +209,8 @@ public class Grid
                 {
                     if (grid[switchCounterToIntegerForArray(i)][j].checkHit())
                         System.out.print("X ");
+                    else if (grid[switchCounterToIntegerForArray(i)][j].checkMiss())
+                        System.out.print("O ");
                     else if (grid[switchCounterToIntegerForArray(i)][j].hasShip())
                     {
                         // System.out.print("X ");

@@ -1,7 +1,11 @@
+package battleship;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Battleship
-{
+{	
     public static Scanner reader = new Scanner(System.in);
       
     public static void main(String[] args)
@@ -10,7 +14,8 @@ public class Battleship
         
         System.out.println("\nPlayer SETUP:");
         Player userPlayer = new Player();
-        setup(userPlayer);
+        //setup(userPlayer);
+        setupComputer(userPlayer);
         
         System.out.println("Computer SETUP...DONE...PRESS ENTER TO CONTINUE...");
         reader.nextLine();
@@ -45,19 +50,249 @@ public class Battleship
         }
     }
     
+    /**
+     * Class representing the Determinization of a GameState
+     * 
+     */
+    private static class Determinization
+    {
+    	Grid assumedHumanGrid; //The grid that the computer assumes for the player
+    	Grid assumedComputerGrid; //The grid that the player assumes for the computer
+    }
+    
+    /**
+     * Class representing a Field in a matrix
+     */
+    private static class Field
+    {
+    	public Field(int inRow, int inCol)
+    	{
+    		row = inRow;
+    		col = inCol;
+    	}
+    	
+    	public int row;
+    	public int col;
+    }
+    
+    /**
+     * Class representing a matrix of chances
+     */
+    private static class ChanceMatrix
+    {
+    	float[][] grid = new float[10][10];
+    	
+    	/***
+    	 * Analyzes this ChanceMatrix and returns the Field with the highest win chance
+    	 * @return The Field with the highest win chance
+    	 */
+    	public Field bestField()
+    	{
+    		Field highestField = new Field(0,0);
+    		
+    		for(int x = 0; x < 10; x++)
+    		{
+        		for(int y = 0; y < 10; y++)
+        		{
+        			if(grid[x][y] > grid[highestField.row][highestField.col])
+        			{
+        				highestField = new Field(x, y);
+        			}
+        		}
+    		}
+    		
+    		return highestField;
+    	}
+    	
+    	public void add(ChanceMatrix matrixToAdd)
+    	{
+    		for(int x = 0; x < 10; x++)
+    		{
+        		for(int y = 0; y < 10; y++)
+        		{
+        			grid[x][y] += matrixToAdd.grid[x][y];
+        		}
+    		}
+    	}
+    	
+    	public void divide(int divisor)
+    	{
+    		for(int x = 0; x < 10; x++)
+    		{
+        		for(int y = 0; y < 10; y++)
+        		{
+        			grid[x][y] /= divisor;
+        		}
+    		}
+    	}
+    }
+    
+    private static boolean validDeterminization(Grid base, Player player)
+    {
+		for(int x = 0; x < 10; x++)
+		{
+    		for(int y = 0; y < 10; y++)
+    		{ 
+    			if(base.getStatus(x, y) == Location.HIT)
+    			{
+        	    	if(!player.playerGrid.hasShip(x, y))
+        	    	{
+        	    		return false;
+        	    	}
+    			}
+    			else if(base.getStatus(x, y) == Location.MISSED)
+    			{
+        	    	if(player.playerGrid.hasShip(x, y))
+        	    	{
+        	    		return false;
+        	    	}
+    			}
+    		}
+		}
+		return true;
+    }
+    
+    private static void reproduceShots(Grid base, Player player)
+    {
+		for(int x = 0; x < 10; x++)
+		{
+    		for(int y = 0; y < 10; y++)
+    		{
+    			if(base.getStatus(x, y) == Location.HIT)
+    			{
+        	    	player.playerGrid.markHit(x, y);
+    			}
+    			else if(base.getStatus(x, y) == Location.MISSED)
+    			{
+        	    	player.playerGrid.markMiss(x, y);
+    			}
+    		}
+		}
+    }
+    
+    private static Grid constructPossibleGrid(Grid base)
+    {
+    	Player user = new Player();
+
+    	setupComputer(user);
+    	reproduceShots(base, user);
+    	
+    	while (!validDeterminization(base, user)) {
+    		user = new Player();
+        	setupComputer(user);	
+        	reproduceShots(base, user);
+    	}
+    	
+    	return user.playerGrid;
+    }
+    
+    private static Determinization createDeterminization(Player comp, Player user) {
+    	Determinization d = new Determinization();
+    	
+    	Grid compFiredShots = user.oppGrid;
+    	Grid userFiredShots = comp.oppGrid;
+
+    	d.assumedComputerGrid = constructPossibleGrid(compFiredShots);
+    	d.assumedHumanGrid = constructPossibleGrid(userFiredShots);
+    	
+    	System.out.println("assumedHumanGrid: ");
+    	d.assumedHumanGrid.printCombined();
+    	System.out.println("assumedComputerGrid: ");
+    	d.assumedComputerGrid.printCombined();
+    	
+    	return d;
+    }
+    
+    /**
+     * Creates count Determinizations.
+     * A determinazation is Board/Grid with concrete information about placed ships.
+     * 
+     * @param comp The computer
+     * @param user The human player
+     * @param count The number of Determinizations to create
+     * @return A list containing the Determinizations
+     */
+    private static Determinization[] createDeterminizations(Player comp, Player user, int count)
+    {
+    	 Determinization[] result = new Determinization[count];
+    	 
+    	 for(int i = 0; i < count; i++) {
+    		 // Create a det. for player (opponent)
+    		 result[i] = createDeterminization(comp, user);
+    	 }
+    	 
+    	 return result;
+    }
+    
+    /**
+     * Performs the MCTS-Algorythm and performs it iterations times
+     * @param d The determinization to apply MCTS to
+     * @param iterations The number of times to perform MCTS
+     * @return
+     */
+    private static ChanceMatrix MCTS(Determinization d, int iterations)
+    {
+    	ChanceMatrix result = new ChanceMatrix();
+    	
+    	//TODO
+    	
+    	return result;
+    }
+    
+    /**
+     * Given multiple ChanceMatrixes returns the average
+     * @param chanceMatrixes The ChanceMatrixes to calculate the average for
+     * @return The average ChanceMatrix
+     */
+    private static ChanceMatrix averageChanceMatrix(List<ChanceMatrix> chanceMatrixes)
+    {
+    	ChanceMatrix result = new ChanceMatrix();
+    	
+    	int length = chanceMatrixes.size();
+    	
+    	for(ChanceMatrix matrix : chanceMatrixes)
+    	{
+    		result.add(matrix);
+    	}
+    	
+    	result.divide(length);
+    	
+    	return result;
+    }
+    
+    
+    /**
+     * Function for the computer to select a Field to shoot
+     * @param comp The computer
+     * @param user The human player
+     * @return The field to shoot
+     */
+    private static Field selectOpponentField(Player comp, Player user)
+    {    	
+    	//Creates 500 determinizations
+    	Determinization[] determinizations = createDeterminizations(comp, user, 100);
+    	
+    	List<ChanceMatrix> simulations = new ArrayList<ChanceMatrix>();
+    	
+    	for(Determinization d : determinizations)
+    	{
+    		ChanceMatrix winChanceMatrix = new ChanceMatrix();
+        	winChanceMatrix = MCTS(d, 1000);
+        	simulations.add(winChanceMatrix);
+    	}
+    	
+    	ChanceMatrix averageWinChanceMatrix = averageChanceMatrix(simulations);
+    	
+    	return averageWinChanceMatrix.bestField();
+    }
+    
     private static void compMakeGuess(Player comp, Player user)
     {
-        Randomizer rand = new Randomizer();
-        int row = rand.nextInt(0, 9);
-        int col = rand.nextInt(0, 9);
-        
-        // While computer already guessed this posiiton, make a new random guess
-        while (comp.oppGrid.alreadyGuessed(row, col))
-        {
-            row = rand.nextInt(0, 9);
-            col = rand.nextInt(0, 9);
-        }
-        
+    	Field results = selectOpponentField(comp, user);
+
+    	int row = results.row;
+    	int col = results.col;
+    	
         if (user.playerGrid.hasShip(row, col))
         {
             comp.oppGrid.markHit(row, col);
@@ -186,23 +421,21 @@ public class Battleship
         int counter = 1;
         int normCounter = 0;
         
-        Randomizer rand = new Randomizer();
-        
         while (p.numOfShipsLeft() > 0)
         {
             for (Ship s: p.ships)
             {
-                int row = rand.nextInt(0, 9);
-                int col = rand.nextInt(0, 9);
-                int dir = rand.nextInt(0, 1);
+                int row = Randomizer.nextInt(0, 9);
+                int col = Randomizer.nextInt(0, 9);
+                int dir = Randomizer.nextInt(0, 1);
                 
                 //System.out.println("DEBUG: row-" + row + "; col-" + col + "; dir-" + dir);
                 
                 while (hasErrorsComp(row, col, dir, p, normCounter)) // while the random nums make error, start again
                 {
-                    row = rand.nextInt(0, 9);
-                    col = rand.nextInt(0, 9);
-                    dir = rand.nextInt(0, 1);
+                    row = Randomizer.nextInt(0, 9);
+                    col = Randomizer.nextInt(0, 9);
+                    dir = Randomizer.nextInt(0, 1);
                     //System.out.println("AGAIN-DEBUG: row-" + row + "; col-" + col + "; dir-" + dir);
                 }
                 
