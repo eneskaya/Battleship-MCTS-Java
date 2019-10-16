@@ -14,8 +14,8 @@ public class Battleship
         
         System.out.println("\nPlayer SETUP:");
         Player userPlayer = new Player();
-        //setup(userPlayer);
-        setupComputer(userPlayer);
+        setup(userPlayer);
+        //setupComputer(userPlayer);
         
         System.out.println("Computer SETUP...DONE...PRESS ENTER TO CONTINUE...");
         reader.nextLine();
