@@ -1,5 +1,9 @@
 package mcts;
 
 public class Tree {
-    Node root;
+    private Node root;
+
+    public Tree(Node root) {
+        this.root = root;
+    }
 }
