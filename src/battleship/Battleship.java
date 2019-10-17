@@ -1,5 +1,9 @@
 package battleship;
 
+import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.variables.IntVar;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,13 +14,13 @@ public class Battleship
       
     public static void main(String[] args)
     {
-        System.out.println("JAVA BATTLESHIP - ** Yuval Marcus **");  
-        
+        System.out.println("JAVA BATTLESHIP - ** Yuval Marcus **");
+
         System.out.println("\nPlayer SETUP:");
         Player userPlayer = new Player();
-        setup(userPlayer);
-        //setupComputer(userPlayer);
-        
+        // setup(userPlayer);
+        setupComputer(userPlayer);
+
         System.out.println("Computer SETUP...DONE...PRESS ENTER TO CONTINUE...");
         reader.nextLine();
         reader.nextLine();
@@ -24,14 +28,14 @@ public class Battleship
         setupComputer(computer);
         System.out.println("\nCOMPUTER GRID (FOR DEBUG)...");
         computer.playerGrid.printShips();
-        
+
         String result = "";
         while(true)
         {
             System.out.println(result);
             System.out.println("\nUSER MAKE GUESS:");
             result = askForGuess(userPlayer, computer);
-            
+
             if (userPlayer.playerGrid.hasLost())
             {
                 System.out.println("COMP HIT!...USER LOSES");
@@ -42,10 +46,10 @@ public class Battleship
                 System.out.println("HIT!...COMPUTER LOSES");
                 break;
             }
-            
+
             System.out.println("\nCOMPUTER IS MAKING GUESS...");
-              
-              
+
+
             compMakeGuess(computer, userPlayer);
         }
     }
