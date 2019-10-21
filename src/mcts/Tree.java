@@ -1,9 +1,13 @@
 package mcts;
 
-public class Tree {
+class Tree {
     private Node root;
 
-    public Tree(Node root) {
+    Tree(Node root) {
         this.root = root;
+    }
+
+    public Node getRootNode() {
+        return this.root;
     }
 }

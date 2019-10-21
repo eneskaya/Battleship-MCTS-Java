@@ -1,8 +1,9 @@
 package battleship;
 
-import org.chocosolver.solver.Model;
-import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.variables.IntVar;
+import com.sun.tools.internal.jxc.ap.Const;
+import mcts.MCTS;
+import sun.rmi.runtime.Log;
+import utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class Battleship
      */
     private static class ChanceMatrix
     {
-    	float[][] grid = new float[10][10];
+    	float[][] grid = new float[Constants.GRID_DIMENSION][Constants.GRID_DIMENSION];
     	
     	/***
     	 * Analyzes this ChanceMatrix and returns the Field with the highest win chance
@@ -94,9 +95,9 @@ public class Battleship
     	{
     		Field highestField = new Field(0,0);
     		
-    		for(int x = 0; x < 10; x++)
+    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
     		{
-        		for(int y = 0; y < 10; y++)
+        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
         		{
         			if(grid[x][y] > grid[highestField.row][highestField.col])
         			{
@@ -110,9 +111,9 @@ public class Battleship
     	
     	public void add(ChanceMatrix matrixToAdd)
     	{
-    		for(int x = 0; x < 10; x++)
+    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
     		{
-        		for(int y = 0; y < 10; y++)
+        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
         		{
         			grid[x][y] += matrixToAdd.grid[x][y];
         		}
@@ -121,9 +122,9 @@ public class Battleship
     	
     	public void divide(int divisor)
     	{
-    		for(int x = 0; x < 10; x++)
+    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
     		{
-        		for(int y = 0; y < 10; y++)
+        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
         		{
         			grid[x][y] /= divisor;
         		}
@@ -133,9 +134,9 @@ public class Battleship
     
     private static boolean validDeterminization(Grid base, Player player)
     {
-		for(int x = 0; x < 10; x++)
+		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
 		{
-    		for(int y = 0; y < 10; y++)
+    		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
     		{ 
     			if(base.getStatus(x, y) == Location.HIT)
     			{
@@ -158,9 +159,9 @@ public class Battleship
     
     private static void reproduceShots(Grid base, Player player)
     {
-		for(int x = 0; x < 10; x++)
+		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
 		{
-    		for(int y = 0; y < 10; y++)
+    		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
     		{
     			if(base.getStatus(x, y) == Location.HIT)
     			{
@@ -342,7 +343,7 @@ public class Battleship
             oldCol = col;
             col = convertUserColToProCol(col);
                     
-            //System.out.println("DEBUG: " + row + col);
+            Logger.debug("" + row + col);
                     
             if (col >= 0 && col <= 9 && row != -1)
                 break;
@@ -392,7 +393,7 @@ public class Battleship
                     System.out.print("Type in direction (0-H, 1-V): ");
                     dir = reader.nextInt();
                     
-                    //System.out.println("DEBUG: " + row + col + dir);
+                    Logger.debug("" + row + col + dir);
                     
                     if (col >= 0 && col <= 9 && row != -1 && dir != -1) // Check valid input
                     {
@@ -405,7 +406,7 @@ public class Battleship
                     System.out.println("Invalid location!");
                 }
             
-                //System.out.println("FURTHER DEBUG: row = " + row + "; col = " + col);
+                Logger.debug("row = " + row + "; col = " + col);
                 p.ships[normCounter].setLocation(row, col);
                 p.ships[normCounter].setDirection(dir);
                 p.playerGrid.addShip(p.ships[normCounter]);
@@ -433,17 +434,19 @@ public class Battleship
                 int col = Randomizer.nextInt(0, 9);
                 int dir = Randomizer.nextInt(0, 1);
                 
-                //System.out.println("DEBUG: row-" + row + "; col-" + col + "; dir-" + dir);
+                Logger.debug("row-" + row + "; col-" + col + "; dir-" + dir);
                 
                 while (hasErrorsComp(row, col, dir, p, normCounter)) // while the random nums make error, start again
                 {
                     row = Randomizer.nextInt(0, 9);
                     col = Randomizer.nextInt(0, 9);
                     dir = Randomizer.nextInt(0, 1);
-                    //System.out.println("AGAIN-DEBUG: row-" + row + "; col-" + col + "; dir-" + dir);
+
+                    Logger.debug("row-" + row + "; col-" + col + "; dir-" + dir);
                 }
                 
-                //System.out.println("FURTHER DEBUG: row = " + row + "; col = " + col);
+                Logger.debug("row = " + row + "; col = " + col);
+
                 p.ships[normCounter].setLocation(row, col);
                 p.ships[normCounter].setDirection(dir);
                 p.playerGrid.addShip(p.ships[normCounter]);
@@ -456,7 +459,7 @@ public class Battleship
     
     private static boolean hasErrors(int row, int col, int dir, Player p, int count)
     {
-        //System.out.println("DEBUG: count arg is " + count);
+        Logger.debug("count arg is " + count);
         
         int length = p.ships[count].getLength();
         
@@ -464,8 +467,9 @@ public class Battleship
         if (dir == 0)
         {
             int checker = length + col;
-            //System.out.println("DEBUG: checker is " + checker);
-            if (checker > 10)
+            Logger.debug("checker is " + checker);
+
+            if (checker > Constants.GRID_DIMENSION)
             {
                 System.out.println("SHIP DOES NOT FIT");
                 return true;
@@ -476,8 +480,9 @@ public class Battleship
         if (dir == 1) // VERTICAL
         {
             int checker = length + row;
-            //System.out.println("DEBUG: checker is " + checker);
-            if (checker > 10)
+            Logger.debug("checker is " + checker);
+
+            if (checker > Constants.GRID_DIMENSION)
             {
                 System.out.println("SHIP DOES NOT FIT");
                 return true;
@@ -490,7 +495,8 @@ public class Battleship
             // For each location a ship occupies, check if ship is already there
             for (int i = col; i < col+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
+
                 if(p.playerGrid.hasShip(row, i))
                 {
                     System.out.println("THERE IS ALREADY A SHIP AT THAT LOCATION");
@@ -503,7 +509,7 @@ public class Battleship
             // For each location a ship occupies, check if ship is already there
             for (int i = row; i < row+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
                 if(p.playerGrid.hasShip(i, col))
                 {
                     System.out.println("THERE IS ALREADY A SHIP AT THAT LOCATION");
@@ -517,7 +523,7 @@ public class Battleship
     
     private static boolean hasErrorsComp(int row, int col, int dir, Player p, int count)
     {
-        //System.out.println("DEBUG: count arg is " + count);
+        Logger.debug("count arg is " + count);
         
         int length = p.ships[count].getLength();
         
@@ -525,8 +531,9 @@ public class Battleship
         if (dir == 0)
         {
             int checker = length + col;
-            //System.out.println("DEBUG: checker is " + checker);
-            if (checker > 10)
+            Logger.debug("checker is " + checker);
+
+            if (checker > Constants.GRID_DIMENSION)
             {
                 return true;
             }
@@ -536,8 +543,9 @@ public class Battleship
         if (dir == 1) // VERTICAL
         {
             int checker = length + row;
-            //System.out.println("DEBUG: checker is " + checker);
-            if (checker > 10)
+            Logger.debug("checker is " + checker);
+
+            if (checker > Constants.GRID_DIMENSION)
             {
                 return true;
             }
@@ -549,7 +557,7 @@ public class Battleship
             // For each location a ship occupies, check if ship is already there
             for (int i = col; i < col+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
                 if(p.playerGrid.hasShip(row, i))
                 {
                     return true;
@@ -561,7 +569,7 @@ public class Battleship
             // For each location a ship occupies, check if ship is already there
             for (int i = row; i < row+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
                 if(p.playerGrid.hasShip(i, col))
                 {
                     return true;

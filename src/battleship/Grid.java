@@ -1,13 +1,15 @@
 package battleship;
 
+import utils.Logger;
+
 public class Grid
 {
     private Location[][] grid;
     private int points;
 
     // Constants for number of rows and columns.
-    public static final int NUM_ROWS = 10;
-    public static final int NUM_COLS = 10;
+    public static final int NUM_ROWS = Constants.GRID_DIMENSION;
+    public static final int NUM_COLS = Constants.GRID_DIMENSION;
     
     public Grid()
     {
@@ -128,7 +130,8 @@ public class Grid
         {
             for (int i = col; i < col+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
+
                 grid[row][i].setShip(true);
                 grid[row][i].setLengthOfShip(length);
                 grid[row][i].setDirectionOfShip(dir);
@@ -138,7 +141,8 @@ public class Grid
         {
             for (int i = row; i < row+length; i++)
             {
-                //System.out.println("DEBUG: row = " + row + "; col = " + i);
+                Logger.debug("row = " + row + "; col = " + i);
+
                 grid[i][col].setShip(true);
                 grid[i][col].setLengthOfShip(length);
                 grid[i][col].setDirectionOfShip(dir);
