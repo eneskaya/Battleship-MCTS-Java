@@ -3,8 +3,12 @@ package battleship;
 public class Player
 {
     // These are the lengths of all of the ships.
-    private static final int[] SHIP_LENGTHS = {2, 2, 3, 4, 5};
-    private static final int NUM_OF_SHIPS = 5;
+    public static final int[] SHIP_LENGTHS = {2, 2, 2, 2, 3, 3, 3, 4, 4, 5};
+
+    public static int getNumOfShips()
+    {
+        return SHIP_LENGTHS.length;
+    }
     
     public Ship[] ships;
 
@@ -15,8 +19,8 @@ public class Player
     
     public Player()
     {        
-        ships = new Ship[NUM_OF_SHIPS];
-        for (int i = 0; i < NUM_OF_SHIPS; i++)
+        ships = new Ship[getNumOfShips()];
+        for (int i = 0; i < getNumOfShips(); i++)
         {
             Ship tempShip = new Ship(SHIP_LENGTHS[i]);
             ships[i] = tempShip;
@@ -36,7 +40,7 @@ public class Player
     
     public int numOfShipsLeft()
     {
-        int counter = NUM_OF_SHIPS;
+        int counter = getNumOfShips();
         for (Ship s: ships)
         {
             if (s.isLocationSet() && s.isDirectionSet())
