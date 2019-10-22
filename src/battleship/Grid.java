@@ -16,7 +16,24 @@ public class Grid
     // Constants for number of rows and columns.
     public static final int NUM_ROWS = Constants.GRID_DIMENSION;
     public static final int NUM_COLS = Constants.GRID_DIMENSION;
-    
+
+    public Grid deepClone()
+    {
+        Grid result = new Grid();
+
+        result.points = this.points;
+
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[row].length; col++)
+            {
+                result.grid[row][col] = this.grid[row][col].deepClone();
+            }
+        }
+
+        return result;
+    }
+
     public Grid()
     {
         if (NUM_ROWS > 26)

@@ -12,7 +12,19 @@ public class Location
     private int status;
     private int lengthOfShip;
     private int directionOfShip;
-    
+
+    public Location deepClone()
+    {
+        Location result = new Location();
+
+        result.status = this.status;
+        result.hasShip = this.hasShip;
+        result.lengthOfShip = this.lengthOfShip;
+        result.directionOfShip = this.directionOfShip;
+
+        return result;
+    }
+
     // Location constructor. 
     public Location()
     {

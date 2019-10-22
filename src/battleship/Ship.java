@@ -21,7 +21,16 @@ public class Ship
         this.col = -1;
         this.direction = UNSET;
     }
-    
+
+    public Ship deepClone()
+    {
+        Ship result = new Ship(length);
+        result.row = this.row;
+        result.col = this.col;
+        result.direction = this.direction;
+        return result;
+    }
+
     // Has the location been init
     public boolean isLocationSet()
     {
