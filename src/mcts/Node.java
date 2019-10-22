@@ -1,25 +1,29 @@
 package mcts;
 
-import battleship.Grid;
+import battleship.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class Node {
-    private Grid ownGrid;
-    private Grid opponentGrid;
+    private Player opponent;
+    private Player self;
+
+    // Statistics
+    private int plays = 0;
+    private int wins = 0;
 
     private List<Node> children;
 
     /**
      * Initialize a Node.
      *
-     * @param opponentGrid The grid of the human (opponent)
-     * @param ownGrid The grid of the computer
+     * @param humanOpponent The human (opponent) player
+     * @param self The computer player
      */
-    public Node(Grid opponentGrid, Grid ownGrid) {
-        this.ownGrid = ownGrid;
-        this.opponentGrid = opponentGrid;
+    public Node(Player self, Player humanOpponent) {
+        this.self = self;
+        this.opponent = humanOpponent;
 
         this.children = new ArrayList<>();
     }
@@ -30,5 +34,29 @@ class Node {
 
     public List<Node> getChildren() {
         return this.children;
+    }
+
+    public void incrementPlays() {
+        this.plays++;
+    }
+
+    public void incrementWins() {
+        this.wins++;
+    }
+
+    public int getPlays() {
+        return plays;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public Player getSelf() {
+        return self;
     }
 }

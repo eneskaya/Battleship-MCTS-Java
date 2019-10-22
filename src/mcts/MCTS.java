@@ -1,14 +1,14 @@
 package mcts;
 
-import battleship.Grid;
+import battleship.Player;
 import utils.Logger;
 
 public class MCTS {
     private Tree gameTree;
     private int maxIterations;
 
-    public MCTS(Grid opponentGrid, Grid ownGrid, int iterations) {
-        this.gameTree = new Tree(new Node(opponentGrid, ownGrid));
+    public MCTS(Player self, Player opponent, int iterations) {
+        this.gameTree = new Tree(new Node(self, opponent));
         this.maxIterations = iterations;
     }
 
@@ -25,9 +25,9 @@ public class MCTS {
 
             // Expand node
 
-            // Simulate game play
+            // Simulate game play (playout)
 
-            // Back-propagate
+            // Back-propagate, update parents
 
             currentIteration++;
         }
