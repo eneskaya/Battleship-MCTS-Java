@@ -1,12 +1,8 @@
 package battleship;
 
-import com.sun.tools.internal.jxc.ap.Const;
-import mcts.MCTS;
-import sun.rmi.runtime.Log;
+import mcts.ISMCTS;
 import utils.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Battleship
@@ -55,245 +51,9 @@ public class Battleship
         }
     }
     
-    /**
-     * Class representing the Determinization of a GameState
-     * 
-     */
-    private static class Determinization
-    {
-    	Grid assumedHumanGrid; //The grid that the computer assumes for the player
-    	Grid assumedComputerGrid; //The grid that the player assumes for the computer
-    }
-    
-    /**
-     * Class representing a Field in a matrix
-     */
-    private static class Field
-    {
-    	public Field(int inRow, int inCol)
-    	{
-    		row = inRow;
-    		col = inCol;
-    	}
-    	
-    	public int row;
-    	public int col;
-    }
-    
-    /**
-     * Class representing a matrix of chances
-     */
-    private static class ChanceMatrix
-    {
-    	float[][] grid = new float[Constants.GRID_DIMENSION][Constants.GRID_DIMENSION];
-    	
-    	/***
-    	 * Analyzes this ChanceMatrix and returns the Field with the highest win chance
-    	 * @return The Field with the highest win chance
-    	 */
-    	public Field bestField()
-    	{
-    		Field highestField = new Field(0,0);
-    		
-    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
-    		{
-        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
-        		{
-        			if(grid[x][y] > grid[highestField.row][highestField.col])
-        			{
-        				highestField = new Field(x, y);
-        			}
-        		}
-    		}
-    		
-    		return highestField;
-    	}
-    	
-    	public void add(ChanceMatrix matrixToAdd)
-    	{
-    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
-    		{
-        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
-        		{
-        			grid[x][y] += matrixToAdd.grid[x][y];
-        		}
-    		}
-    	}
-    	
-    	public void divide(int divisor)
-    	{
-    		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
-    		{
-        		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
-        		{
-        			grid[x][y] /= divisor;
-        		}
-    		}
-    	}
-    }
-    
-    private static boolean validDeterminization(Grid base, Player player)
-    {
-		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
-		{
-    		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
-    		{ 
-    			if(base.getStatus(x, y) == Location.HIT)
-    			{
-        	    	if(!player.playerGrid.hasShip(x, y))
-        	    	{
-        	    		return false;
-        	    	}
-    			}
-    			else if(base.getStatus(x, y) == Location.MISSED)
-    			{
-        	    	if(player.playerGrid.hasShip(x, y))
-        	    	{
-        	    		return false;
-        	    	}
-    			}
-    		}
-		}
-		return true;
-    }
-    
-    private static void reproduceShots(Grid base, Player player)
-    {
-		for(int x = 0; x < Constants.GRID_DIMENSION; x++)
-		{
-    		for(int y = 0; y < Constants.GRID_DIMENSION; y++)
-    		{
-    			if(base.getStatus(x, y) == Location.HIT)
-    			{
-        	    	player.playerGrid.markHit(x, y);
-    			}
-    			else if(base.getStatus(x, y) == Location.MISSED)
-    			{
-        	    	player.playerGrid.markMiss(x, y);
-    			}
-    		}
-		}
-    }
-    
-    private static Grid constructPossibleGrid(Grid base)
-    {
-    	Player user = new Player();
-
-    	setupComputer(user);
-    	reproduceShots(base, user);
-    	
-    	while (!validDeterminization(base, user)) {
-    		user = new Player();
-        	setupComputer(user);	
-        	reproduceShots(base, user);
-    	}
-    	
-    	return user.playerGrid;
-    }
-    
-    private static Determinization createDeterminization(Player comp, Player user) {
-    	Determinization d = new Determinization();
-    	
-    	Grid compFiredShots = user.oppGrid;
-    	Grid userFiredShots = comp.oppGrid;
-
-    	d.assumedComputerGrid = constructPossibleGrid(compFiredShots);
-    	d.assumedHumanGrid = constructPossibleGrid(userFiredShots);
-    	
-    	System.out.println("assumedHumanGrid: ");
-    	d.assumedHumanGrid.printCombined();
-    	System.out.println("assumedComputerGrid: ");
-    	d.assumedComputerGrid.printCombined();
-    	
-    	return d;
-    }
-    
-    /**
-     * Creates count Determinizations.
-     * A determinazation is Board/Grid with concrete information about placed ships.
-     * 
-     * @param comp The computer
-     * @param user The human player
-     * @param count The number of Determinizations to create
-     * @return A list containing the Determinizations
-     */
-    private static Determinization[] createDeterminizations(Player comp, Player user, int count)
-    {
-    	 Determinization[] result = new Determinization[count];
-    	 
-    	 for(int i = 0; i < count; i++) {
-    		 // Create a det. for player (opponent)
-    		 result[i] = createDeterminization(comp, user);
-    	 }
-    	 
-    	 return result;
-    }
-    
-    /**
-     * Performs the MCTS-Algorythm and performs it iterations times
-     * @param d The determinization to apply MCTS to
-     * @param iterations The number of times to perform MCTS
-     * @return
-     */
-    private static ChanceMatrix MCTS(Determinization d, int iterations)
-    {
-    	ChanceMatrix result = new ChanceMatrix();
-    	
-    	//TODO
-    	
-    	return result;
-    }
-    
-    /**
-     * Given multiple ChanceMatrixes returns the average
-     * @param chanceMatrixes The ChanceMatrixes to calculate the average for
-     * @return The average ChanceMatrix
-     */
-    private static ChanceMatrix averageChanceMatrix(List<ChanceMatrix> chanceMatrixes)
-    {
-    	ChanceMatrix result = new ChanceMatrix();
-    	
-    	int length = chanceMatrixes.size();
-    	
-    	for(ChanceMatrix matrix : chanceMatrixes)
-    	{
-    		result.add(matrix);
-    	}
-    	
-    	result.divide(length);
-    	
-    	return result;
-    }
-    
-    
-    /**
-     * Function for the computer to select a Field to shoot
-     * @param comp The computer
-     * @param user The human player
-     * @return The field to shoot
-     */
-    private static Field selectOpponentField(Player comp, Player user)
-    {    	
-    	//Creates 500 determinizations
-    	Determinization[] determinizations = createDeterminizations(comp, user, 100);
-    	
-    	List<ChanceMatrix> simulations = new ArrayList<ChanceMatrix>();
-    	
-    	for(Determinization d : determinizations)
-    	{
-    		ChanceMatrix winChanceMatrix = new ChanceMatrix();
-        	winChanceMatrix = MCTS(d, 1000);
-        	simulations.add(winChanceMatrix);
-    	}
-    	
-    	ChanceMatrix averageWinChanceMatrix = averageChanceMatrix(simulations);
-    	
-    	return averageWinChanceMatrix.bestField();
-    }
-    
     private static void compMakeGuess(Player comp, Player user)
     {
-    	Field results = selectOpponentField(comp, user);
+        ISMCTS.Field results = ISMCTS.selectFieldToShoot(comp, user);
 
     	int row = results.row;
     	int col = results.col;
@@ -520,13 +280,16 @@ public class Battleship
         
         return false;
     }
-    
-    private static boolean hasErrorsComp(int row, int col, int dir, Player p, int count)
+
+    public static boolean hasErrorsComp(int row, int col, int dir, Player p, int count)
     {
-        Logger.debug("count arg is " + count);
-        
-        int length = p.ships[count].getLength();
-        
+        return hasErrorsComp(row, col, dir, p.playerGrid, Player.SHIP_LENGTHS[count]);
+    }
+
+    public static boolean hasErrorsComp(int row, int col, int dir, Grid playerGrid, int length)
+    {
+        Logger.debug("Legnth is " + length);
+
         // Check if off grid - Horizontal
         if (dir == 0)
         {
@@ -538,7 +301,7 @@ public class Battleship
                 return true;
             }
         }
-        
+
         // Check if off grid - Vertical
         if (dir == 1) // VERTICAL
         {
@@ -550,7 +313,7 @@ public class Battleship
                 return true;
             }
         }
-            
+
         // Check if overlapping with another ship
         if (dir == 0) // Hortizontal
         {
@@ -558,7 +321,7 @@ public class Battleship
             for (int i = col; i < col+length; i++)
             {
                 Logger.debug("row = " + row + "; col = " + i);
-                if(p.playerGrid.hasShip(row, i))
+                if(playerGrid.hasShip(row, i) || playerGrid.getStatus(row, i) == Location.MISSED)
                 {
                     return true;
                 }
@@ -570,13 +333,13 @@ public class Battleship
             for (int i = row; i < row+length; i++)
             {
                 Logger.debug("row = " + row + "; col = " + i);
-                if(p.playerGrid.hasShip(i, col))
+                if(playerGrid.hasShip(i, col) || playerGrid.getStatus(i, col) == Location.MISSED)
                 {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
 

@@ -2,6 +2,8 @@ package battleship;
 
 import utils.Logger;
 
+import static battleship.Location.HIT;
+
 public class Grid
 {
     private Location[][] grid;
@@ -109,10 +111,16 @@ public class Grid
     
     public boolean hasLost()
     {
-        if (points >= 17)
-            return true;
-        else
-            return false;
+
+        for(int x = 0; x < Constants.GRID_DIMENSION; x++) {
+            for (int y = 0; y < Constants.GRID_DIMENSION; y++) {
+                if(hasShip(x, y) && getStatus(x, y) != HIT)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     public void addShip(Ship s)
