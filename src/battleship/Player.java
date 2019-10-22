@@ -3,7 +3,7 @@ package battleship;
 public class Player
 {
     // These are the lengths of all of the ships.
-    public static final int[] SHIP_LENGTHS = {2, 2, 2, 2, 3, 3, 3, 4, 4, 5};
+    public static final int[] SHIP_LENGTHS = {2};
 
     public static int getNumOfShips()
     {
@@ -13,8 +13,10 @@ public class Player
     public Ship[] ships;
 
     // The own grid
+    // Contains HITs MISSes and location of SHIPS
     public Grid playerGrid;
     // The grid, that's shown to the opponent
+    // Only contains HITs and MISSes
     public Grid oppGrid;
     
     public Player()

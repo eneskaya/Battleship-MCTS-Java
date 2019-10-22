@@ -1,5 +1,6 @@
 package battleship;
 
+import mcts.Field;
 import mcts.ISMCTS;
 import utils.Logger;
 
@@ -15,23 +16,26 @@ public class Battleship
 
         System.out.println("\nPlayer SETUP:");
         Player userPlayer = new Player();
-        // setup(userPlayer);
         setupComputer(userPlayer);
 
-        System.out.println("Computer SETUP...DONE...PRESS ENTER TO CONTINUE...");
-        reader.nextLine();
-        reader.nextLine();
         Player computer = new Player();
         setupComputer(computer);
         System.out.println("\nCOMPUTER GRID (FOR DEBUG)...");
         computer.playerGrid.printShips();
 
+        System.out.println("Computer SETUP...DONE...PRESS ENTER TO CONTINUE...");
+        reader.nextLine();
+
         String result = "";
+
         while(true)
         {
-            System.out.println(result);
             System.out.println("\nUSER MAKE GUESS:");
             result = askForGuess(userPlayer, computer);
+
+            System.out.println();
+            System.out.println("-------" + result + "-------");
+            System.out.println();
 
             if (userPlayer.playerGrid.hasLost())
             {
@@ -53,7 +57,7 @@ public class Battleship
     
     private static void compMakeGuess(Player comp, Player user)
     {
-        ISMCTS.Field results = ISMCTS.selectFieldToShoot(comp, user);
+        Field results = ISMCTS.selectFieldToShoot(comp, user);
 
     	int row = results.row;
     	int col = results.col;
@@ -182,7 +186,8 @@ public class Battleship
 
     private static void setupComputer(Player p)
     {
-        System.out.println();
+        Logger.debug("Setting up computer player");
+
         int counter = 1;
         int normCounter = 0;
         

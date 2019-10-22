@@ -50,3 +50,6 @@ IEEE Transactions on Computational Intelligence and AI in Games
 
 [2] http://www.aifactory.co.uk/newsletter/2013_01_reduce_burden.htm
 
+### Lessons Learned
+
+1. If you have a program in which some state will change very often (e.g. simulating from a given state), maybe don't use Java. It's harder to clone Objects, especially if they're complex. Functional programming would've made it a lot easier.

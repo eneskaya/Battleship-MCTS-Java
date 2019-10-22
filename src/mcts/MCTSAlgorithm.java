@@ -6,13 +6,13 @@ import utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MCTS {
+class MCTSAlgorithm {
     private Node root;
     private int maxIterations;
 
     private int currentLevel;
 
-    public MCTS(Player self, Player opponent, int iterations) {
+    MCTSAlgorithm(Player self, Player opponent, int iterations) {
         this.root = new Node(self, opponent);
         this.maxIterations = iterations;
 
@@ -20,26 +20,32 @@ public class MCTS {
         this.currentLevel = 0;
     }
 
-    public int[] run() {
+    /**
+     * Run the algorithm.
+     *
+     * @return Field(row, col) of the suggested next move.
+     */
+    Field run() {
         int currentIteration = 1;
 
-        int[] suggestedMove = {0, 0};
+        Field suggestedMove = new Field(0, 0);
 
         Logger.debug("Starting MCTS");
 
-        Node selectedRoot = this.root;
+        // Step 0: Determinization
 
         while (currentIteration <= maxIterations) {
             Logger.debug("MCTS Iteration: " + currentIteration);
 
-            // Select a child node to run
+            // Step 1: Select a child node to run
+            Node selectedNode = selectNode(this.root);
 
-            // Expand node
+            // Step 2: Expand node
 
-            // Simulate game play (playout)
+            // Step 3: Simulate game play (playout)
 
-            // Back-propagate, update parents
-            for (Node n : selectedRoot.getChildren()) {
+            // Step 4: Back-propagate, update parents
+            for (Node n : root.getChildren()) {
                 // TODO
 
                 this.decrementLevel();
@@ -52,13 +58,25 @@ public class MCTS {
     }
 
     /**
-     * Select next node with UCT algorithm.
+     * Select next node with max. UCT value.
      *
      * @return selected node
      */
     private Node selectNode(Node root) {
-        //
-        return null;
+        int playsAtRoot = root.getPlays();
+        List<Node> childrenOfRoot = root.getChildren();
+
+        Node selectedNode = root;
+
+        int bestUctValue = Integer.MIN_VALUE;
+
+        for (Node c : childrenOfRoot) {
+            if (uctValue(playsAtRoot, c.getWins(), c.getPlays()) > bestUctValue) {
+                selectedNode = c;
+            };
+        }
+
+        return selectedNode;
     }
 
     /**
