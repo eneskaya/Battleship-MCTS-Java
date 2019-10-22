@@ -1,8 +1,6 @@
 package mcts;
 
 import battleship.Player;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import utils.Logger;
 
 import java.util.ArrayList;
@@ -58,8 +56,6 @@ public class MCTS {
      *
      * @return selected node
      */
-    @NotNull
-    @Contract(pure = true)
     private Node selectNode(Node root) {
         //
         return null;
@@ -71,7 +67,6 @@ public class MCTS {
      * @param node The node on which to simulate game play.
      * @return true if WIN, false else
      */
-    @Contract(pure = true)
     private boolean simulateGamePlayForNode(Node node) {
         //
 
@@ -83,8 +78,6 @@ public class MCTS {
      *
      * @return The children nodes
      */
-    @NotNull
-    @Contract(pure = true)
     private List<Node> expandNode() {
         List <Node> children = new ArrayList<>();
 
