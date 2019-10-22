@@ -3,9 +3,6 @@ package mcts;
 import battleship.Player;
 import utils.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class MCTSAlgorithm {
     private Node root;
     private int maxIterations;
@@ -13,7 +10,7 @@ class MCTSAlgorithm {
     private int currentLevel;
 
     MCTSAlgorithm(Player self, Player opponent, int iterations) {
-        this.root = new Node(self, opponent);
+        this.root = new Node(null, self, opponent);
         this.maxIterations = iterations;
 
         // The current depth of the tree
@@ -28,55 +25,29 @@ class MCTSAlgorithm {
     Field run() {
         int currentIteration = 1;
 
-        Field suggestedMove = new Field(0, 0);
-
         Logger.debug("Starting MCTS");
-
-        // Step 0: Determinization
 
         while (currentIteration <= maxIterations) {
             Logger.debug("MCTS Iteration: " + currentIteration);
 
-            // Step 1: Select a child node to run
-            Node selectedNode = selectNode(this.root);
-
+            // Step 1: Select a child node to expand
             // Step 2: Expand node
-
             // Step 3: Simulate game play (playout)
-
             // Step 4: Back-propagate, update parents
-            for (Node n : root.getChildren()) {
-                // TODO
-
-                this.decrementLevel();
-            }
 
             currentIteration++;
         }
 
-        return suggestedMove;
-    }
-
-    /**
-     * Select next node with max. UCT value.
-     *
-     * @return selected node
-     */
-    private Node selectNode(Node root) {
-        int playsAtRoot = root.getPlays();
-        List<Node> childrenOfRoot = root.getChildren();
-
-        Node selectedNode = root;
-
-        int bestUctValue = Integer.MIN_VALUE;
-
-        for (Node c : childrenOfRoot) {
-            if (uctValue(playsAtRoot, c.getWins(), c.getPlays()) > bestUctValue) {
-                selectedNode = c;
-            };
+        // Assign the first child node to be the winner
+        Node winningNode = this.root.getChildren().get(0);
+        // ... then check if it was the best node, else re-assign
+        for (Node c : this.root.getChildren()) {
+            if (c.getWins() > winningNode.getWins()) {
+                winningNode = c;
+            }
         }
 
-        return selectedNode;
+        return winningNode.getMove();
     }
 
     /**
@@ -86,26 +57,10 @@ class MCTSAlgorithm {
      * @return true if WIN, false else
      */
     private boolean simulateGamePlayForNode(Node node) {
-        //
+
 
         return false;
     }
-
-    /**
-     * Get children of node.
-     *
-     * @return The children nodes
-     */
-    private List<Node> expandNode() {
-        List <Node> children = new ArrayList<>();
-
-
-        // TODO
-
-        this.incrementLevel();
-        return children;
-    }
-
 
     private void incrementLevel() {
         this.currentLevel = currentLevel + 1;

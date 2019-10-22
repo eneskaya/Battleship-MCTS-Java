@@ -5,7 +5,7 @@ package mcts;
  */
 public class Field
 {
-    Field(int inRow, int inCol)
+    public Field(int inRow, int inCol)
     {
         row = inRow;
         col = inCol;

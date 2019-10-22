@@ -1,6 +1,10 @@
 package battleship;
 
+import mcts.Field;
 import utils.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static battleship.Location.HIT;
 
@@ -93,7 +97,7 @@ public class Grid
     {
         return NUM_COLS;
     }
-    
+
     public void printStatus()
     {
         generalPrintMethod(0);
@@ -322,5 +326,27 @@ public class Grid
         {
             return toReturn;
         }
-    }   
+    }
+
+    /**
+     * Checks the grid and returns ALL possible moves in a List of Fields.
+     *
+     * @return List<Field> List of possible moves
+     */
+    public List<Field> getAllPossibleMoves() {
+        List<Field> result = new ArrayList<>();
+
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[row].length; col++)
+            {
+                if (grid[row][col].isUnguessed()) {
+                    Field possibleMove = new Field(row, col);
+                    result.add(possibleMove);
+                }
+            }
+        }
+
+        return result;
+    }
 }

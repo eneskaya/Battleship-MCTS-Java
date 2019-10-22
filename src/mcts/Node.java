@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Node {
+    private Node parent; // null means root node
+
+    // The move that was done by the algorithm
+    private Field move;
+
     private Player opponent;
     private Player self;
 
@@ -21,7 +26,8 @@ class Node {
      * @param humanOpponent The human (opponent) player
      * @param self The computer player
      */
-    Node(Player self, Player humanOpponent) {
+    Node(Node parent, Player self, Player humanOpponent) {
+        this.parent = parent;
         this.self = self;
         this.opponent = humanOpponent;
 
@@ -58,5 +64,13 @@ class Node {
 
     public Player getSelf() {
         return self;
+    }
+
+    public Field getMove() {
+        return move;
+    }
+
+    public Node getParent() {
+        return parent;
     }
 }
