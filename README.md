@@ -48,3 +48,5 @@ Proceedings of IEEE Conference on Computational Intelligence in Games (CIG), 87â
 [Information Set Monte Carlo Tree Search](https://ieeexplore.ieee.org/abstract/document/6203567/authors#authors)
 IEEE Transactions on Computational Intelligence and AI in Games
 
+[2] http://www.aifactory.co.uk/newsletter/2013_01_reduce_burden.htm
+

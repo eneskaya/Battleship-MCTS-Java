@@ -1,6 +1,7 @@
 package mcts;
 
 import battleship.Player;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ class Node {
      * @param humanOpponent The human (opponent) player
      * @param self The computer player
      */
-    public Node(Player self, Player humanOpponent) {
+    Node(Player self, Player humanOpponent) {
         this.self = self;
         this.opponent = humanOpponent;
 
