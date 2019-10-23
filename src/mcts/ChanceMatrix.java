@@ -8,7 +8,7 @@ import battleship.Constants;
  */
 class ChanceMatrix
 {
-    private int[][] grid = new int[Constants.GRID_DIMENSION][Constants.GRID_DIMENSION];
+    private float[][] grid = new float[Constants.GRID_DIMENSION][Constants.GRID_DIMENSION];
 
     /***
      * Analyzes this ChanceMatrix and returns the Field with the highest win chance
@@ -32,7 +32,29 @@ class ChanceMatrix
         return highestField;
     }
 
-    void incrementRowCol(int row, int col) {
-        grid[row][col] = grid[row][col]++;
+    public void add(ChanceMatrix matrixToAdd)
+    {
+        for(int x = 0; x < Constants.GRID_DIMENSION; x++)
+        {
+            for(int y = 0; y < Constants.GRID_DIMENSION; y++)
+            {
+                grid[x][y] += matrixToAdd.grid[x][y];
+            }
+        }
+    }
+
+    public void divide(int divisor)
+    {
+        for(int x = 0; x < Constants.GRID_DIMENSION; x++)
+        {
+            for(int y = 0; y < Constants.GRID_DIMENSION; y++)
+            {
+                grid[x][y] /= divisor;
+            }
+        }
+    }
+
+    void incrementRowCol(Field field, float value) {
+        grid[field.row][field.col] += value;
     }
 }

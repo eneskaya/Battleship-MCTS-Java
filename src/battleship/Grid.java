@@ -344,26 +344,4 @@ public class Grid
             return toReturn;
         }
     }
-
-    /**
-     * Checks the grid and returns ALL possible moves in a List of Fields.
-     *
-     * @return List<Field> List of possible moves
-     */
-    public List<Field> getAllPossibleMoves() {
-        List<Field> result = new ArrayList<>();
-
-        for (int row = 0; row < grid.length; row++)
-        {
-            for (int col = 0; col < grid[row].length; col++)
-            {
-                if (grid[row][col].isUnguessed()) {
-                    Field possibleMove = new Field(row, col);
-                    result.add(possibleMove);
-                }
-            }
-        }
-
-        return result;
-    }
 }

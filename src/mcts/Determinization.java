@@ -1,18 +1,26 @@
 package mcts;
 
 import battleship.*;
+import utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class representing a possible opponent grid based on the information sets (for human and AI)
- *
+ * The Determinization represents a "fake" state of the actual game.
+ * The playerGrid of the human (and the computer) are assumed, so that we don't reveal the actual game state and
+ * distort the MCTS simulation phase (which would be simply cheating).
  */
 class Determinization
 {
     Player humanPlayer;
     Player computerPlayer;
+
+    public Determinization()
+    {
+        humanPlayer = new Player();
+        computerPlayer = new Player();
+    }
 
     private static boolean validDeterminization(Grid informationSet, Grid possibleGrid)
     {
@@ -137,12 +145,11 @@ class Determinization
     private static Determinization createDeterminization(Player comp, Player user) {
         Determinization d = new Determinization();
 
-        // TODO not sure this is right, fix later
-        // Also make sure to clone the player objects, so we don't mess up the actual game state
+        Grid compFiredShots = user.oppGrid;
+        Grid userFiredShots = comp.oppGrid;
 
-        d.computerPlayer = comp;
-        user.oppGrid = constructPossibleGrid(user.oppGrid);
-        d.humanPlayer = user;
+        d.computerPlayer.playerGrid = constructPossibleGrid(compFiredShots);
+        d.humanPlayer.playerGrid = constructPossibleGrid(userFiredShots);
 
         return d;
     }
@@ -158,7 +165,7 @@ class Determinization
      */
     static List<Determinization> createDeterminizations(Player comp, Player user, int count)
     {
-        int maxTime = 8000;
+        long maxTime = 8000l;
 
         long currentTime = System.currentTimeMillis();
         long endTime = currentTime+maxTime;
@@ -167,8 +174,10 @@ class Determinization
 
         for(int i = 0; i < count; i++) {
             // Create a det. for player (opponent)
-            result.add(createDeterminization(comp, user));
-            if(System.currentTimeMillis() < endTime)
+            result.add(createDeterminization(comp.deepClone(), user.deepClone()));
+
+            currentTime = System.currentTimeMillis();
+            if(currentTime > endTime)
             {
                 break;
             }

@@ -13,17 +13,25 @@ public class ISMCTS {
      */
     public static Field selectFieldToShoot(Player comp, Player user)
     {
-        List<Determinization> determinizations = Determinization.createDeterminizations(comp, user, 200);
+        List<Determinization> determinizations = Determinization.createDeterminizations(comp, user, 10);
 
         ChanceMatrix resultsMatrix = new ChanceMatrix();
 
+        int iterationCount = 150;
+
         for(Determinization d : determinizations)
         {
-            MCTSAlgorithm algorithm = new MCTSAlgorithm(d.computerPlayer, d.humanPlayer, 500);
-            Field selectedFields = algorithm.run();
+            MCTSAlgorithm algorithm = new MCTSAlgorithm(d.computerPlayer, d.humanPlayer, iterationCount);
+            List<Node> selectedFields = algorithm.run();
 
-            resultsMatrix.incrementRowCol(selectedFields.row, selectedFields.col);
+            for(Node field : selectedFields)
+            {
+                resultsMatrix.incrementRowCol(field.getMove(), field.getWinChance());
+            }
         }
+
+        resultsMatrix.divide(iterationCount);
+
 
         return resultsMatrix.bestField();
     }

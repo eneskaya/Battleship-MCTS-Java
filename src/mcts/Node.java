@@ -1,6 +1,7 @@
 package mcts;
 
 import battleship.Player;
+import battleship.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +24,38 @@ class Node {
     /**
      * Initialize a Node.
      *
-     * @param humanOpponent The human (opponent) player
+     * @param opponent The human (opponent) player
      * @param self The computer player
      */
-    Node(Node parent, Player self, Player humanOpponent) {
+    Node(Node parent, Player self, Player opponent) {
         this.parent = parent;
-        this.self = self;
-        this.opponent = humanOpponent;
+        this.self = self.deepClone();
+        this.opponent = opponent.deepClone();
 
         this.children = new ArrayList<>();
+    }
+
+    public void playNextMove(Field move) {
+        this.move = move;
+
+        if (opponent.playerGrid.hasShip(move.row, move.col))
+        {
+            self.oppGrid.markHit(move.row, move.col);
+            opponent.playerGrid.markHit(move.row, move.col);
+        }
+        else
+        {
+            self.oppGrid.markMiss(move.row, move.col);
+            opponent.playerGrid.markMiss(move.row, move.col);
+        }
+
+    }
+
+    public Node randomChild()
+    {
+        if(children.isEmpty()) return null;
+
+        return children.get(Randomizer.nextInt(0, children.size()-1));
     }
 
     public void addChild(Node child) {
@@ -56,6 +80,10 @@ class Node {
 
     public int getWins() {
         return wins;
+    }
+
+    public float getWinChance() {
+        return ((float) this.wins) / (((float) this.plays));
     }
 
     public Player getOpponent() {

@@ -1,5 +1,10 @@
 package battleship;
 
+import mcts.Field;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player
 {
     // These are the lengths of all of the ships.
@@ -71,5 +76,28 @@ public class Player
         s.setLocation(row, col);
         s.setDirection(direction);
         playerGrid.addShip(s);
+    }
+
+
+    /**
+     * Checks the grid and returns ALL possible moves in a List of Fields.
+     *
+     * @return List<Field> List of possible moves
+     */
+    public List<Field> getAllPossibleMoves() {
+        List<Field> result = new ArrayList<>();
+
+        for (int row = 0; row < oppGrid.numRows() ; row++)
+        {
+            for (int col = 0; col < oppGrid.numCols(); col++)
+            {
+                if (oppGrid.getStatus(row, col) == Location.UNGUESSED) {
+                    Field possibleMove = new Field(row, col);
+                    result.add(possibleMove);
+                }
+            }
+        }
+
+        return result;
     }
 }
