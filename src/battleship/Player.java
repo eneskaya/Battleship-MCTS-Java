@@ -8,7 +8,7 @@ import java.util.List;
 public class Player
 {
     // These are the lengths of all of the ships.
-    public static final int[] SHIP_LENGTHS = {2, 2, 2, 2, 3, 3, 3, 4, 4, 5};
+    public static final int[] SHIP_LENGTHS = {2, 2};
 
     public static int getNumOfShips()
     {
@@ -16,6 +16,8 @@ public class Player
     }
     
     public Ship[] ships;
+
+    public String name;
 
     // The own grid
     // Contains HITs MISSes and location of SHIPS
@@ -26,7 +28,7 @@ public class Player
 
     public Player deepClone()
     {
-        Player result = new Player();
+        Player result = new Player(name);
         for(int i = 0; i < getNumOfShips(); i++)
         {
             result.ships[i] = this.ships[i].deepClone();
@@ -37,7 +39,7 @@ public class Player
         return result;
     }
 
-    public Player()
+    public Player(String inName)
     {        
         ships = new Ship[getNumOfShips()];
         for (int i = 0; i < getNumOfShips(); i++)
@@ -48,6 +50,7 @@ public class Player
         
         playerGrid = new Grid();
         oppGrid = new Grid();
+        name = inName;
     }
     
     public void addShips()

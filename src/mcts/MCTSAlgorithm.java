@@ -30,7 +30,6 @@ class MCTSAlgorithm {
 
         Logger.debug("Starting MCTS");
 
-
         while (currentIteration <= maxIterations) {
             Logger.debug("MCTS Iteration: " + currentIteration);
 
@@ -38,22 +37,14 @@ class MCTSAlgorithm {
             expandNode(currentNode); // Step 2: Expand node
             Node simulateNode = currentNode.randomChild();
 
+            if (simulateNode == null || simulateNode.getSelf().getAllPossibleMoves().isEmpty()) break;
+
             boolean win = simulateGamePlayForNode(simulateNode); // Step 3: Simulate game play (playout)
 
             backPropagate(simulateNode, win); // Step 4: Back-propagate, update parents
 
             currentIteration++;
         }
-
-        /*// Assign a random child node to be the winner
-        Node winningNode = this.root.getChildren().get(Randomizer.nextInt(0, root.getChildren().size()-1));
-
-        // ... then check if it was the best node, else re-assign
-        for (Node c : this.root.getChildren()) {
-            if ((c.getWinChance()) > winningNode.getWinChance()) {
-                winningNode = c;
-            }
-        }*/
 
         return root.getChildren();
     }
@@ -81,7 +72,7 @@ class MCTSAlgorithm {
     }
 
     private void expandNode(Node parent) {
-        List<Field> possibleMoves = parent.getSelf().getAllPossibleMoves();
+        List<Field> possibleMoves = parent.getOpponent().getAllPossibleMoves();
 
         for (Field move : possibleMoves) {
             Node child = new Node(parent, parent.getOpponent(), parent.getSelf());
@@ -107,41 +98,38 @@ class MCTSAlgorithm {
      * @return true if WIN, false else
      */
     private boolean simulateGamePlayForNode(Node node) {
-        int rand = Randomizer.nextInt(0,1);
-        return rand == 0;
+        Player winner = node.getSelf();
+        Player loser = node.getOpponent();
 
-//        Player winner = node.getSelf();
-//        Player loser = node.getOpponent();
-//
-//        while (!loser.playerGrid.hasLost()) {
-//            List<Field> possibleMoves = winner.getAllPossibleMoves();
-//            Field fieldToShoot = possibleMoves.get(Randomizer.nextInt(0, winner.getAllPossibleMoves().size()-1));
-//
-//            if (loser.playerGrid.hasShip(fieldToShoot.row, fieldToShoot.col))
-//            {
-//                loser.playerGrid.markHit(fieldToShoot.row, fieldToShoot.col);
-//                winner.oppGrid.markHit(fieldToShoot.row, fieldToShoot.col);
-//            }
-//            else
-//            {
-//                loser.playerGrid.markMiss(fieldToShoot.row, fieldToShoot.col);
-//                winner.oppGrid.markMiss(fieldToShoot.row, fieldToShoot.row);
-//            }
-//
-//            Player temp = winner;
-//            winner = loser;
-//            loser = temp;
-//        }
-//
-//        return node.getSelf()==winner; //Finds out if node.getSelf() has won by comparing its reference with the winner
+        return !simulateGamePlayForNode(loser, winner);
     }
+    /**
+     * Takes a Node and simulates game play.
+     *
+     * @param node The node on which to simulate game play.
+     * @return true if WIN, false else
+     */
+    private boolean simulateGamePlayForNode(Player winner, Player loser) {
+        List<Field> possibleMoves = winner.getAllPossibleMoves();
+        Field fieldToShoot = possibleMoves.get(Randomizer.nextInt(0, winner.getAllPossibleMoves().size()-1));
 
-    private void incrementLevel() {
-        this.currentLevel = currentLevel + 1;
-    }
+        if (loser.playerGrid.hasShip(fieldToShoot.row, fieldToShoot.col))
+        {
+            loser.playerGrid.markHit(fieldToShoot.row, fieldToShoot.col);
+            winner.oppGrid.markHit(fieldToShoot.row, fieldToShoot.col);
+        }
+        else
+        {
+            loser.playerGrid.markMiss(fieldToShoot.row, fieldToShoot.col);
+            winner.oppGrid.markMiss(fieldToShoot.row, fieldToShoot.col);
+        }
 
-    private void decrementLevel() {
-        this.currentLevel = currentLevel + 1;
+        if(loser.playerGrid.hasLost())
+        {
+            return true;
+        }
+
+        return !simulateGamePlayForNode(loser, winner);
     }
 
     /**

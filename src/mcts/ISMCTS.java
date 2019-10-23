@@ -21,7 +21,7 @@ public class ISMCTS {
 
         for(Determinization d : determinizations)
         {
-            MCTSAlgorithm algorithm = new MCTSAlgorithm(d.computerPlayer, d.humanPlayer, iterationCount);
+            MCTSAlgorithm algorithm = new MCTSAlgorithm(d.humanPlayer, d.computerPlayer, iterationCount);
             List<Node> selectedFields = algorithm.run();
 
             for(Node field : selectedFields)

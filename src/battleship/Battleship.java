@@ -15,10 +15,10 @@ public class Battleship
         System.out.println("JAVA BATTLESHIP - ** Yuval Marcus **");
 
         System.out.println("\nPlayer SETUP:");
-        Player userPlayer = new Player();
+        Player userPlayer = new Player("Mensch");
         setupComputer(userPlayer);
 
-        Player computer = new Player();
+        Player computer = new Player("Computer");
         setupComputer(computer);
         System.out.println("\nCOMPUTER GRID (FOR DEBUG)...");
         computer.playerGrid.printShips();
@@ -195,16 +195,16 @@ public class Battleship
         {
             for (Ship s: p.ships)
             {
-                int row = Randomizer.nextInt(0, 9);
-                int col = Randomizer.nextInt(0, 9);
+                int row = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
+                int col = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
                 int dir = Randomizer.nextInt(0, 1);
                 
                 Logger.debug("row-" + row + "; col-" + col + "; dir-" + dir);
                 
                 while (hasErrorsComp(row, col, dir, p, normCounter)) // while the random nums make error, start again
                 {
-                    row = Randomizer.nextInt(0, 9);
-                    col = Randomizer.nextInt(0, 9);
+                    row = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
+                    col = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
                     dir = Randomizer.nextInt(0, 1);
 
                     Logger.debug("row-" + row + "; col-" + col + "; dir-" + dir);

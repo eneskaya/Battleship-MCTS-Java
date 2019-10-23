@@ -18,8 +18,6 @@ class Determinization
 
     public Determinization()
     {
-        humanPlayer = new Player();
-        computerPlayer = new Player();
     }
 
     private static boolean validDeterminization(Grid informationSet, Grid possibleGrid)
@@ -113,13 +111,13 @@ class Determinization
         {
             Ship newShip = new Ship(remainingShipLength);
 
-            int row = Randomizer.nextInt(0, 9);
-            int col = Randomizer.nextInt(0, 9);
+            int row = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
+            int col = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
             int dir = Randomizer.nextInt(0, 1);
             while (Battleship.hasErrorsComp(row, col, dir, result, remainingShipLength)) // while the random numbers make errors, start again
             {
-                row = Randomizer.nextInt(0, 9);
-                col = Randomizer.nextInt(0, 9);
+                row = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
+                col = Randomizer.nextInt(0, Constants.GRID_DIMENSION-1);
                 dir = Randomizer.nextInt(0, 1);
             }
 
@@ -145,8 +143,11 @@ class Determinization
     private static Determinization createDeterminization(Player comp, Player user) {
         Determinization d = new Determinization();
 
-        Grid compFiredShots = user.oppGrid;
-        Grid userFiredShots = comp.oppGrid;
+        d.humanPlayer = user;
+        d.computerPlayer = comp;
+
+        Grid compFiredShots = comp.oppGrid;
+        Grid userFiredShots = user.oppGrid;
 
         d.computerPlayer.playerGrid = constructPossibleGrid(compFiredShots);
         d.humanPlayer.playerGrid = constructPossibleGrid(userFiredShots);
