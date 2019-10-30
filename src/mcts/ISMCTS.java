@@ -13,11 +13,11 @@ public class ISMCTS {
      */
     public static Field selectFieldToShoot(Player comp, Player user)
     {
-        List<Determinization> determinizations = Determinization.createDeterminizations(comp, user, 10);
+        List<Determinization> determinizations = Determinization.createDeterminizations(comp, user, 200);
 
         ChanceMatrix resultsMatrix = new ChanceMatrix();
 
-        int iterationCount = 20;
+        int iterationCount = 300;
 
         for(Determinization d : determinizations)
         {
@@ -30,8 +30,9 @@ public class ISMCTS {
             }
         }
 
-        resultsMatrix.divide(iterationCount);
+        resultsMatrix.print();
 
+        resultsMatrix.divide(iterationCount);
 
         return resultsMatrix.bestField();
     }

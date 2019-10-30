@@ -8,7 +8,7 @@ import java.util.List;
 public class Player
 {
     // These are the lengths of all of the ships.
-    public static final int[] SHIP_LENGTHS = {2, 2};
+    public static final int[] SHIP_LENGTHS = {2, 2, 3};
 
     public static int getNumOfShips()
     {

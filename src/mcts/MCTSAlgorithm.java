@@ -106,10 +106,7 @@ class MCTSAlgorithm {
         Player winner = node.getSelf().deepClone();
         Player loser = node.getOpponent().deepClone();
 
-        System.out.println("Simulation beginnt!");
-
-        winner.playerGrid.printCombined();
-        loser.playerGrid.printCombined();
+        Logger.debug("Simulation beginnt!");
 
         return !simulateGamePlayForNode(loser.deepClone(), winner.deepClone());
     }
@@ -124,8 +121,6 @@ class MCTSAlgorithm {
         List<Field> possibleMoves = winner.getAllPossibleMoves();
         Field fieldToShoot = possibleMoves.get(Randomizer.nextInt(0, winner.getAllPossibleMoves().size()-1));
 
-        Player mensch = winner.name == "Mensch"?winner:loser;
-        mensch.oppGrid.printStatus();
 
         if (loser.playerGrid.hasShip(fieldToShoot.row, fieldToShoot.col))
         {

@@ -57,4 +57,16 @@ class ChanceMatrix
     void incrementRowCol(Field field, float value) {
         grid[field.row][field.col] += value;
     }
+
+    public void print() {
+        for(int x = 0; x < Constants.GRID_DIMENSION; x++)
+        {
+            for(int y = 0; y < Constants.GRID_DIMENSION; y++)
+            {
+                System.out.print(grid[x][y]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
 }
