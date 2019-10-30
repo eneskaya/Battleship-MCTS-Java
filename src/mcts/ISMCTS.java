@@ -17,7 +17,7 @@ public class ISMCTS {
 
         ChanceMatrix resultsMatrix = new ChanceMatrix();
 
-        int iterationCount = 150;
+        int iterationCount = 20;
 
         for(Determinization d : determinizations)
         {

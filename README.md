@@ -30,13 +30,19 @@ There are many possibilites to approach the uncertainty. We will use the _Determ
 
 The general idea is as follows (_opponent_ is always the human player, by _We_ we mean the AI):
 
-1. The grid size and number of ships and length is known to both players
+1. The grid size and number of ships and their length is known to both players
 1. After shooting at the grid in each round the opponent has to reveal wether we HIT or MISS
 1. We can use the opponent grid information to sample a set of possible grids (game state)
 1. We run the MCTS algorithm for each of the sampled grids
 1. The next moves suggested by each MCTS run are averaged, and the highest ranked is chosen
 1. Let opponent do his turn
 1. Repeat at 3.
+
+### Some questions
+
+- **Does it make sense to use MCTS for the game of Battleships?**
+- **What's the difference between MCTS and MCGS?**
+
 
 ### References
 

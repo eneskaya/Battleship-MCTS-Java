@@ -10,14 +10,9 @@ class MCTSAlgorithm {
     private Node root;
     private int maxIterations;
 
-    private int currentLevel;
-
     MCTSAlgorithm(Player self, Player opponent, int iterations) {
         this.root = new Node(null, self, opponent);
         this.maxIterations = iterations;
-
-        // The current depth of the tree
-        this.currentLevel = 0;
     }
 
     /**
@@ -56,7 +51,9 @@ class MCTSAlgorithm {
 
         Node bestNode = node;
 
+        // Hold the best UCT Value
         double bestUct = 0;
+        // For each child of the root node, calculate UCT value
         for (Node c : node.getChildren()) {
             double uct = uctValue(c.getParent().getPlays(), c.getWins(), c.getPlays());
 
@@ -81,6 +78,12 @@ class MCTSAlgorithm {
         }
     }
 
+    /**
+     * Update the statistics up the tree.
+     *
+     * @param node
+     * @param win
+     */
     private void backPropagate(Node node, boolean win)
     {
         if (win) node.incrementWins();
@@ -88,6 +91,8 @@ class MCTSAlgorithm {
 
         Node parent = node.getParent();
 
+        // Recursively call backPropagate, with inverted win flag
+        // because the parent of the current node has won if the child has lost and vice versa
         if (parent != null) backPropagate(parent, !win);
     }
 
@@ -98,20 +103,29 @@ class MCTSAlgorithm {
      * @return true if WIN, false else
      */
     private boolean simulateGamePlayForNode(Node node) {
-        Player winner = node.getSelf();
-        Player loser = node.getOpponent();
+        Player winner = node.getSelf().deepClone();
+        Player loser = node.getOpponent().deepClone();
 
-        return !simulateGamePlayForNode(loser, winner);
+        System.out.println("Simulation beginnt!");
+
+        winner.playerGrid.printCombined();
+        loser.playerGrid.printCombined();
+
+        return !simulateGamePlayForNode(loser.deepClone(), winner.deepClone());
     }
     /**
      * Takes a Node and simulates game play.
      *
-     * @param node The node on which to simulate game play.
+     * @param winner
+     * @param loser
      * @return true if WIN, false else
      */
     private boolean simulateGamePlayForNode(Player winner, Player loser) {
         List<Field> possibleMoves = winner.getAllPossibleMoves();
         Field fieldToShoot = possibleMoves.get(Randomizer.nextInt(0, winner.getAllPossibleMoves().size()-1));
+
+        Player mensch = winner.name == "Mensch"?winner:loser;
+        mensch.oppGrid.printStatus();
 
         if (loser.playerGrid.hasShip(fieldToShoot.row, fieldToShoot.col))
         {
