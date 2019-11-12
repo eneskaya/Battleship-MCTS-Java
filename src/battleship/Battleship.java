@@ -40,11 +40,23 @@ public class Battleship
             if (userPlayer.playerGrid.hasLost())
             {
                 System.out.println("COMP HIT!...USER LOSES");
+
+                System.out.println("Computer Grid:");
+                computer.playerGrid.printShips();
+                System.out.println("User Grid:");
+                userPlayer.playerGrid.printShips();
+
                 break;
             }
             else if (computer.playerGrid.hasLost())
             {
                 System.out.println("HIT!...COMPUTER LOSES");
+
+                System.out.println("Computer Grid:");
+                computer.playerGrid.printShips();
+                System.out.println("User Grid:");
+                userPlayer.playerGrid.printShips();
+
                 break;
             }
 

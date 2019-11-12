@@ -54,6 +54,7 @@ class MCTSAlgorithm {
         // Hold the best UCT Value
         double bestUct = 0;
         // For each child of the root node, calculate UCT value
+        // and select node with max UCT value
         for (Node c : node.getChildren()) {
             double uct = uctValue(c.getParent().getPlays(), c.getWins(), c.getPlays());
 
@@ -71,6 +72,8 @@ class MCTSAlgorithm {
     private void expandNode(Node parent) {
         List<Field> possibleMoves = parent.getOpponent().getAllPossibleMoves();
 
+        // For each possible move, play out and add the playout
+        // resulting node to parents children nodes
         for (Field move : possibleMoves) {
             Node child = new Node(parent, parent.getOpponent(), parent.getSelf());
             child.playNextMove(move);
@@ -150,7 +153,7 @@ class MCTSAlgorithm {
      *
      * @return UCT value
      *
-     *      (w_i / n_i) + sqrt((2 * n) / n_i)
+     *      (w_i / n_i) + sqrt((2 * ln( n )) / n_i)
      *          where
      *              w_i     total wins at current node
      *              n_i     total plays at current node

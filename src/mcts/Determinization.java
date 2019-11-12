@@ -146,12 +146,12 @@ class Determinization
         d.humanPlayer = user;
         d.computerPlayer = comp;
 
-        // The shots that are marked in the computers grid
+        // The shots that are marked in the respective opp grid
         Grid compFiredShots = comp.oppGrid;
         Grid userFiredShots = user.oppGrid;
 
         d.humanPlayer.playerGrid = constructPossibleGrid(compFiredShots);
-        d.computerPlayer.playerGrid = constructPossibleGrid(userFiredShots);
+        //d.computerPlayer.playerGrid = constructPossibleGrid(userFiredShots);
 
         return d;
     }
