@@ -41,7 +41,6 @@ The general idea is as follows (_opponent_ is always the human player, by _We_ w
 ### Some questions
 
 - **Does it make sense to use MCTS for the game of Battleships?**
-- **What's the difference between MCTS and MCGS?**
 
 
 ### References
