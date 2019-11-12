@@ -55,6 +55,30 @@ IEEE Transactions on Computational Intelligence and AI in Games
 
 [2] http://www.aifactory.co.uk/newsletter/2013_01_reduce_burden.htm
 
+### Sample Output
+
+```
+COMPUTER IS MAKING GUESS...
+
+6.0772095   6.267555    6.3350234   6.5314364   5.996564 
+5.2217007   5.2408843   6.349465    0.0         5.7553244 
+5.872676    5.131521    5.367996    7.2089844   5.997716 <---- C4 is rated highest win chance
+5.6596212   5.3406906   0.0         5.4332376   6.7247863 
+6.13833     6.43858     6.6647773   6.170787    5.063571
+
+COMP HIT AT C4
+
+YOUR BOARD...PRESS ENTER TO CONTINUE...
+
+  1 2 3 4 5 
+A - - D - - 
+B - - D X - <--- That's the hit in the round before
+C - - - X D <--- The current move (C4)
+D - - O C D 
+E - - - - - 
+PRESS ENTER TO CONTINUE...
+```
+
 ### Lessons Learned
 
 1. If you have a program in which some state will change very often (e.g. simulating from a given state), maybe don't use Java. It's harder to clone Objects, especially if they're complex. Functional programming would've made it a lot easier.
